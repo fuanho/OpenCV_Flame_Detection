@@ -33,6 +33,7 @@ private:
     QTimer* timer = nullptr;
     QString filename;
     cv::Mat frameColor;
+    cv::Mat firstFrameColor;
     cv::Mat lastFrameColor;
     int fps;
     void setSlider();

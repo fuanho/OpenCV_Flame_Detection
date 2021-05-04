@@ -33,13 +33,19 @@ void MainWindow::timer_tick()
 
     cv::Mat frameHSI;
     cv::Mat frameThreshold;
+    cv::Mat frameSubtractedF;
+    cv::Mat frameSubtractedL;
     cv::Mat frameSubtracted;
     cv::Mat res;
-    cv::subtract(frameColor, lastFrameColor, frameSubtracted);
+    cv::subtract(frameColor, firstFrameColor, frameSubtractedF);
+    cv::subtract(frameColor, lastFrameColor, frameSubtractedL);
+    cv::subtract(frameSubtractedF, frameSubtractedL, frameSubtracted);
     mycv::Converter::cvtColor(frameSubtracted, frameHSI, mycv::COLOR_BGR2HSI);
     mycv::Converter::flameDetection(frameSubtracted, frameHSI, frameThreshold);
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(13, 13), cv::Point(6, 6));
+    cv::dilate(frameThreshold, frameThreshold, element);
     cv::bitwise_and(frameColor, frameColor, res, frameThreshold);
-    //lastFrameColor = frameColor.clone();
+    lastFrameColor = frameColor.clone();
     cv::Size size = cv::Size(700, 500);
     cv::resize(res, res, size, cv::INTER_AREA);
 
@@ -83,6 +89,7 @@ void MainWindow::on_actionOpenFile_triggered()
     connect(timer, &QTimer::timeout, this, &MainWindow::timer_tick);
     setSlider();
     cap.read(frameColor);
+    firstFrameColor = frameColor.clone();
     lastFrameColor = frameColor.clone();
     QImage image2 = QImage(frameColor.data, frameColor.cols, frameColor.rows, QImage::Format_BGR888);
     ui->label_2->setPixmap(QPixmap::fromImage(image2));

@@ -4,16 +4,18 @@
 #include<opencv2/opencv.hpp>
 
 namespace mycv{
+
 enum ColorConversionCodes
 {
     COLOR_BGR2HSI = 0,
     COLOR_HSI2BGR = 1
 };
+
 enum ThreSholdBoundary
 {
-    Rt = 115,
+    Rt = 125,
     St = 55,
-    It = 205
+    It = 215
 };
 
 class Converter
